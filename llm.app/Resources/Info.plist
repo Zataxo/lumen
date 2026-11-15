@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Keys Xcode cannot generate from INFOPLIST_KEY_* build settings. Merged with the generated Info.plist.
+
+  App Transport Security trade-off
+  ================================
+  Lumen talks to servers the *user* types in: LAN IPs (http://192.168.1.50:11434), mDNS names
+  (http://mac-studio.local:11434), VPN / tailnet hostnames (http://box.tail1234.ts.net:11434), and
+  public HTTPS endpoints. Many self-hosted LLM servers only speak plain HTTP.
+
+  * NSAllowsLocalNetworking alone only exempts unqualified names, .local names and IP literals,
+    so a VPN hostname over http:// would be blocked.
+  * Apple IGNORES NSAllowsArbitraryLoads whenever NSAllowsLocalNetworking (or the web-content /
+    media variants) is also present, so the two cannot be combined to mean "local + anything".
+
+  We therefore set NSAllowsArbitraryLoads alone. Cost: ATS no longer forces TLS for any host, so
+  the app itself must make the risk visible — every http:// server shows a "Not encrypted" badge,
+  and the app never sends traffic to hosts the user did not configure. HTTPS servers still get
+  full certificate validation by URLSession. App Review justification: "connects to
+  user-configured, self-hosted servers that commonly do not offer TLS".
+-->
+<plist version="1.0">
+<dict>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Lumen connects to AI model servers on your local network, such as Ollama or LM Studio running on another computer.</string>
+</dict>
+</plist>
