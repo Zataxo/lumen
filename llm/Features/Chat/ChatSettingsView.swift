@@ -23,7 +23,9 @@ struct ChatSettingsView: View {
                             get: { draft.systemPrompt ?? "" },
                             set: { draft.systemPrompt = $0 }
                         ), prompt: Text("Leave empty to send no system prompt"), axis: .vertical)
+                        .labelsHidden()
                         .lineLimit(3...12)
+                        .multilineTextAlignment(.leading)
                     }
                 } header: {
                     Text("System Prompt")

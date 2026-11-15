@@ -7,6 +7,9 @@ struct ModelDetailView: View {
     let loaded: LoadedModel?
     var onUseModel: ((ServerConfig, String) -> Void)?
     var onDeleted: () -> Void
+    /// Pop the navigation stack after deleting (iOS push). The macOS split browser clears
+    /// its selection instead, so dismissing would close the whole sheet.
+    var dismissesOnDelete = true
 
     @Environment(\.dismiss) private var dismiss
     @State private var details: ModelDetails?
@@ -241,7 +244,7 @@ struct ModelDetailView: View {
             if server.defaultModelID == model.id { server.defaultModelID = nil }
             isDeleting = false
             onDeleted()
-            dismiss()
+            if dismissesOnDelete { dismiss() }
         } catch {
             isDeleting = false
             deleteError = ProviderError.map(error, host: connection.baseURL.host())

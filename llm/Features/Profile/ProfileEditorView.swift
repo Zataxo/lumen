@@ -32,13 +32,13 @@ struct ProfileEditorView: View {
                         #if os(iOS)
                         .textContentType(.name)
                         #endif
-                } header: {
-                    Text("Name")
                 }
 
                 Section {
                     TextField("About me", text: $aboutMe, prompt: Text("e.g. I'm an iOS developer in Lisbon. Keep answers concise."), axis: .vertical)
+                        .labelsHidden()
                         .lineLimit(3...8)
+                        .multilineTextAlignment(.leading)
                     Toggle("Include About me in system prompt", isOn: $includeAboutMe)
                 } header: {
                     Text("About Me")

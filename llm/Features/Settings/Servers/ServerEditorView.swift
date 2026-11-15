@@ -168,8 +168,14 @@ struct ServerEditorView: View {
 
     private var connectionSection: some View {
         Section("Connection") {
-            Stepper(value: $draft.timeoutSeconds, in: 5...600, step: 5) {
-                LabeledContent("Request Timeout", value: "\(Int(draft.timeoutSeconds)) s")
+            LabeledContent("Request Timeout") {
+                HStack(spacing: Spacing.small) {
+                    Text("\(Int(draft.timeoutSeconds)) s")
+                        .monospacedDigit()
+                        .foregroundStyle(.secondary)
+                    Stepper("Request Timeout", value: $draft.timeoutSeconds, in: 5...600, step: 5)
+                        .labelsHidden()
+                }
             }
             Toggle("Default Server", isOn: $draft.isDefault)
                 .disabled(servers.isEmpty || (existingServer?.isDefault ?? false))

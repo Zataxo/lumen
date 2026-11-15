@@ -36,7 +36,7 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		F5872A9730A9EA7200BCBD06 /* llm.app */ = {
+		F5872A9730A9EA7200BCBD06 /* llm */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				F5872ABB30A9EA7200BCBD06 /* Exceptions for "llm" folder in "llm.app" target */,
@@ -73,7 +73,7 @@
 		F5872A8C30A9EA7200BCBD06 = {
 			isa = PBXGroup;
 			children = (
-				F5872A9730A9EA7200BCBD06 /* llm.app */,
+				F5872A9730A9EA7200BCBD06 /* llm */,
 				F5872AB130A9EA7200BCBD06 /* LumenTests */,
 				F5872A9630A9EA7200BCBD06 /* Products */,
 			);
@@ -104,7 +104,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				F5872A9730A9EA7200BCBD06 /* llm.app */,
+				F5872A9730A9EA7200BCBD06 /* llm */,
 			);
 			name = llm.app;
 			packageProductDependencies = (

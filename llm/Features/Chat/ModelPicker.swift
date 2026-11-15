@@ -65,6 +65,12 @@ struct ChatModelExplorerSheet: View {
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
+        #if os(macOS)
+        MacModelBrowser(serverID: serverID, allowsServerSwitching: true) { chosenServer, model in
+            session.select(server: chosenServer, modelID: model)
+            dismiss()
+        }
+        #else
         NavigationStack {
             ModelExplorerView(serverID: serverID, allowsServerSwitching: true) { chosenServer, model in
                 session.select(server: chosenServer, modelID: model)
@@ -76,8 +82,6 @@ struct ChatModelExplorerSheet: View {
                 }
             }
         }
-        #if os(macOS)
-        .frame(minWidth: 620, idealWidth: 680, minHeight: 600, idealHeight: 700)
         #endif
     }
 }

@@ -10,26 +10,29 @@ struct SettingsRootView: View {
 
     var body: some View {
         #if os(macOS)
+        // Each tab sizes itself; the Settings window animates between them like System Settings.
         TabView {
             Tab("Servers", systemImage: "server.rack") {
-                NavigationStack {
-                    ServersSettingsView()
-                }
+                MacServersSettingsView()
+                    .frame(width: 600, height: 420)
             }
             Tab("Models", systemImage: "cpu") {
                 ModelDefaultsView()
+                    .frame(width: 600, height: 560)
             }
             Tab("Appearance", systemImage: "paintpalette") {
                 AppearanceSettingsView()
+                    .frame(width: 600, height: 600)
             }
             Tab("Profile", systemImage: "person.crop.circle") {
-                ProfileSettingsView()
+                MacProfileSettingsView()
+                    .frame(width: 600, height: 480)
             }
             Tab("Data", systemImage: "externaldrive") {
                 DataSettingsView()
+                    .frame(width: 600, height: 400)
             }
         }
-        .frame(width: 680, height: 560)
         #else
         NavigationStack(path: $path) {
             List {

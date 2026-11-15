@@ -51,7 +51,9 @@ struct ModelDefaultsView: View {
     private var parametersSections: some View {
         Section {
             TextField("System Prompt", text: $defaults.systemPrompt, prompt: Text("You are a helpful assistant."), axis: .vertical)
+                .labelsHidden()
                 .lineLimit(3...10)
+                .multilineTextAlignment(.leading)
         } header: {
             Text("System Prompt")
         } footer: {
