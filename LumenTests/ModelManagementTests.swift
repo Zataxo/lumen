@@ -9,7 +9,7 @@ import Testing
 final class StubURLProtocol: URLProtocol, @unchecked Sendable {
     struct Response: Sendable {
         var status: Int
-        var body: Data
+        var body: Data 
     }
     struct Recorded: Sendable {
         var method: String

@@ -26,7 +26,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		F5872ABB30A9EA7200BCBD06 /* Exceptions for "llm.app" folder in "llm.app" target */ = {
+		F5872ABB30A9EA7200BCBD06 /* Exceptions for "llm" folder in "llm.app" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Resources/Info.plist,
@@ -39,9 +39,9 @@
 		F5872A9730A9EA7200BCBD06 /* llm.app */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				F5872ABB30A9EA7200BCBD06 /* Exceptions for "llm.app" folder in "llm.app" target */,
+				F5872ABB30A9EA7200BCBD06 /* Exceptions for "llm" folder in "llm.app" target */,
 			);
-			path = llm.app;
+			path = llm;
 			sourceTree = "<group>";
 		};
 		F5872AB130A9EA7200BCBD06 /* LumenTests */ = {
@@ -353,7 +353,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = llm.app/Resources/Info.plist;
+				INFOPLIST_FILE = llm/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Lumen;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -404,7 +404,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = llm.app/Resources/Info.plist;
+				INFOPLIST_FILE = llm/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Lumen;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
