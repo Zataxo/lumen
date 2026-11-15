@@ -37,6 +37,7 @@ struct MacProfileSettingsView: View {
                         }
                         .padding(.top, Spacing.xSmall)
                     }
+                    AccountSection()
                 }
                 .formStyle(.grouped)
             }
@@ -136,6 +137,8 @@ private struct MacProfileForm: View {
                     Button("Remove Profile…", role: .destructive) { isConfirmingRemoval = true }
                 }
             }
+
+            AccountSection()
         }
         .formStyle(.grouped)
         .photosPicker(isPresented: $isPhotoPickerPresented, selection: $photoItem, matching: .images)

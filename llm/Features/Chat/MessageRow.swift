@@ -214,21 +214,11 @@ struct LiveReplyRow: View {
 
 struct TypingIndicator: View {
     var label: String?
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         HStack(spacing: Spacing.small) {
-            TimelineView(.animation(minimumInterval: 1 / 30, paused: reduceMotion)) { context in
-                let time = context.date.timeIntervalSinceReferenceDate
-                HStack(spacing: 4) {
-                    ForEach(0..<3, id: \.self) { index in
-                        Circle()
-                            .frame(width: 7, height: 7)
-                            .opacity(reduceMotion ? 0.5 : 0.3 + 0.7 * max(0, sin(time * 5 - Double(index) * 0.7)))
-                    }
-                }
-            }
-            .foregroundStyle(.secondary)
+            // A miniature of the welcome orb, running faster while the model works.
+            NeuralOrbView(size: 30, tint: Color(red: 0.30, green: 0.80, blue: 0.98), isActive: true)
             if let label {
                 Text(label)
                     .font(.callout)

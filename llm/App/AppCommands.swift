@@ -2,6 +2,7 @@ import SwiftUI
 
 /// Menu bar commands (macOS, and iPad with a hardware keyboard).
 struct LumenCommands: Commands {
+    let auth: AuthStore
     @FocusedValue(\.sceneActions) private var sceneActions
     @FocusedValue(\.composerActions) private var composerActions
     @FocusedValue(\.chatCommands) private var chatCommands
@@ -21,6 +22,10 @@ struct LumenCommands: Commands {
             Button("Paste Image") { composerActions?.pasteImage() }
                 .keyboardShortcut("v", modifiers: [.command, .option])
                 .disabled(composerActions?.canAttach != true)
+        }
+        CommandGroup(after: .appSettings) {
+            Button(auth.currentAccount.map { "Sign Out \($0.displayName)…" } ?? "Sign Out") { auth.signOut() }
+                .disabled(!auth.isSignedIn)
         }
         #if os(iOS)
         // macOS gets ⌘, from the Settings scene; iPadOS needs it here.

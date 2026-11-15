@@ -8,6 +8,7 @@ struct LumenApp: App {
     @State private var settingsRouter = SettingsRouter()
     @State private var modelCatalog = ModelCatalog()
     @State private var pullManager = PullManager()
+    @State private var auth = AuthStore()
 
     init() {
         do {
@@ -24,21 +25,29 @@ struct LumenApp: App {
         WindowGroup(id: "main") {
             RootView()
                 .lumenAppearance()
+                .environment(auth)
                 .environment(pullManager)
                 .environment(statusMonitor)
                 .environment(settingsRouter)
                 .environment(modelCatalog)
         }
         .modelContainer(modelContainer)
-        .commands { LumenCommands() }
+        .commands { LumenCommands(auth: auth) }
         #if os(macOS)
         .defaultSize(width: 1100, height: 760)
         #endif
 
         #if os(macOS)
         Settings {
-            SettingsRootView()
+            Group {
+                if auth.isSignedIn {
+                    SettingsRootView()
+                } else {
+                    SettingsLockedView()
+                }
+            }
                 .lumenAppearance()
+                .environment(auth)
                 .environment(pullManager)
                 .environment(statusMonitor)
                 .environment(settingsRouter)

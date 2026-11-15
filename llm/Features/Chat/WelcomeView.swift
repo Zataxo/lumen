@@ -14,8 +14,17 @@ struct WelcomeView: View {
     @State private var hasAppeared = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.appAccent) private var accent
+    @Environment(AuthStore.self) private var auth
+    @AppStorage(AppearanceKeys.accent) private var accentPreference = PaletteColor.blue
 
     private var profile: UserProfile? { profiles.first }
+
+    /// The orb follows the accent color, nudged toward cyan so the default blue still glows
+    /// like the app icon.
+    private var orbTint: Color {
+        accentPreference == .blue ? Color(red: 0.30, green: 0.80, blue: 0.98) : accent
+    }
 
     var body: some View {
         ScrollView {
@@ -43,16 +52,17 @@ struct WelcomeView: View {
 
     private var header: some View {
         VStack(spacing: Spacing.medium) {
-            if let profile {
-                AvatarView(profile: profile, size: 56)
-            } else {
-                Image(systemName: "sparkles")
-                    .font(.system(size: 36, weight: .light))
-                    .foregroundStyle(.tint)
-                    .symbolRenderingMode(.hierarchical)
-                    .frame(height: 56)
-            }
-            Text(Greeting.text(name: profile?.name))
+            NeuralOrbView(size: 132, tint: orbTint)
+                .scaleEffect(hasAppeared || reduceMotion ? 1 : 0.85)
+                .overlay(alignment: .bottomTrailing) {
+                    if let profile {
+                        AvatarView(profile: profile, size: 34)
+                            .overlay { Circle().strokeBorder(Color.lumenBackground, lineWidth: 3) }
+                            .offset(x: -6, y: -6)
+                    }
+                }
+                .padding(.bottom, -Spacing.small)
+            Text(Greeting.text(name: profile?.name ?? auth.currentAccount?.displayName))
                 .font(.system(.largeTitle, design: .rounded, weight: .semibold))
                 .multilineTextAlignment(.center)
             if let server {

@@ -218,6 +218,7 @@ struct ProfileSettingsView: View {
                     }
                 }
             }
+            AccountSection()
         }
         .formStyle(.grouped)
         .navigationTitle("Profile")
@@ -225,5 +226,40 @@ struct ProfileSettingsView: View {
         .navigationBarTitleDisplayMode(.inline)
         #endif
         .sheet(isPresented: $isEditing) { ProfileEditorView() }
+    }
+}
+
+/// "Signed in as …" with Sign Out. Used by the Profile settings on every platform.
+struct AccountSection: View {
+    @Environment(AuthStore.self) private var auth
+    @State private var isConfirming = false
+
+    var body: some View {
+        if let account = auth.currentAccount {
+            Section {
+                HStack(spacing: Spacing.medium) {
+                    Image(systemName: "person.badge.key.fill")
+                        .font(.title3)
+                        .foregroundStyle(.tint)
+                        .frame(width: 28)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Signed in as \(account.displayName)")
+                        Text("Signing out returns to the sign-in screen. Chats stay on this device.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    Button("Sign Out…", role: .destructive) { isConfirming = true }
+                }
+                .padding(.vertical, Spacing.xxSmall)
+            } header: {
+                Text("Account")
+            }
+            .confirmationDialog("Sign out of Lumen?", isPresented: $isConfirming, titleVisibility: .visible) {
+                Button("Sign Out", role: .destructive) { auth.signOut() }
+            } message: {
+                Text("You'll need your username and password to continue.")
+            }
+        }
     }
 }

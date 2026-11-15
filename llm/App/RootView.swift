@@ -11,10 +11,35 @@ struct RootView: View {
     @Environment(\.openSettings) private var openSettings
     #endif
     @Environment(SettingsRouter.self) private var settingsRouter
+    @Environment(AuthStore.self) private var auth
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     @State private var selectedChatID: UUID?
 
     var body: some View {
+        ZStack {
+            if auth.isSignedIn {
+                app
+                    .transition(.opacity)
+            } else {
+                LoginView()
+                    .transition(.opacity)
+            }
+            if let account = auth.pendingWelcome {
+                WelcomeSplashView(account: account) {
+                    withAnimation(reduceMotion ? .easeOut(duration: 0.2) : .easeInOut(duration: 0.55)) {
+                        auth.pendingWelcome = nil
+                    }
+                }
+                .transition(reduceMotion ? .opacity : .opacity.combined(with: .scale(scale: 1.08)))
+                .zIndex(1)
+            }
+        }
+        .animation(.easeInOut(duration: 0.35), value: auth.isSignedIn)
+    }
+
+    /// The signed-in app. Leaving it (sign out) also dismisses any sheet it presented.
+    private var app: some View {
         layout
             .environment(\.openAppSettings, OpenAppSettingsAction { request in
                 settingsRouter.pendingRequest = request
