@@ -45,6 +45,12 @@ struct DataSettingsView: View {
                 Text("Servers, settings and your profile are kept.")
                     .font(.caption)
             }
+
+            Section("About") {
+                LabeledContent("Version", value: "\(AppInfo.version) (\(AppInfo.build))")
+                LabeledContent("Build", value: AppInfo.configuration)
+            }
+            .textSelection(.enabled)
         }
         .formStyle(.grouped)
         .navigationTitle("Data")

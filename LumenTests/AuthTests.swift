@@ -74,3 +74,27 @@ struct AuthTests {
         }
     }
 }
+
+@Suite("Fresh install")
+struct FreshInstallGuardTests {
+    private func defaults() -> UserDefaults {
+        let name = "lumen.tests.\(UUID().uuidString)"
+        return UserDefaults(suiteName: name)!
+    }
+
+    @Test func clearsKeychainOnFreshInstall() {
+        let defaults = defaults()
+        var cleared = 0
+        #expect(FreshInstallGuard.run(defaults: defaults, hasExistingData: false) { cleared += 1 })
+        #expect(cleared == 1)
+        // Second launch: marker present, nothing cleared.
+        #expect(!FreshInstallGuard.run(defaults: defaults, hasExistingData: false) { cleared += 1 })
+        #expect(cleared == 1)
+    }
+
+    @Test func keepsSessionForExistingUsersUpdating() {
+        var cleared = false
+        #expect(!FreshInstallGuard.run(defaults: defaults(), hasExistingData: true) { cleared = true })
+        #expect(!cleared)
+    }
+}
