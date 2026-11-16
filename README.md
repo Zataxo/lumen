@@ -31,6 +31,21 @@
   <img src="docs/screenshots/welcome.png" width="200" alt="Welcome">
 </p>
 
+## On the Mac
+
+<p align="center">
+  <img src="docs/screenshots/mac/chat.png" width="820" alt="Lumen on macOS: sidebar with chat history and a streamed reply with code and a table">
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/mac/home-dark.png" width="400" alt="New chat in dark mode with suggestions">
+  <img src="docs/screenshots/mac/models.png" width="400" alt="Model browser on macOS">
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/mac/login.png" width="400" alt="Sign-in screen on macOS">
+</p>
+
 ## Requirements
 
 - Xcode 26 or later
