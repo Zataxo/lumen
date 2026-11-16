@@ -55,7 +55,7 @@ There is no backend yet, so sign-in uses two built-in accounts:
 | Zataxo   | Admin123 |
 | Zaad     | Admin123 |
 
-This is a placeholder gate, not real security.
+This is a placeholder gate, not real security — replace `AuthStore` with a server call when a backend exists.
 
 ## Build from the command line
 
@@ -86,4 +86,4 @@ LumenTests/        unit tests
 scripts/           build scripts
 ```
 
-Built with SwiftUI, SwiftData and Swift 6.
+Built with SwiftUI, SwiftData and Swift 6. The only dependency is Apple's [swift-markdown](https://github.com/swiftlang/swift-markdown).
