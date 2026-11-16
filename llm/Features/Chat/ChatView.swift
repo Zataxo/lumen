@@ -7,6 +7,11 @@ struct ChatView: View {
     @Bindable var session: ChatSession
     @Query(sort: \ServerConfig.createdAt) private var servers: [ServerConfig]
     @Environment(ModelCatalog.self) private var catalog
+    @Environment(PullManager.self) private var pullManager
+    @Environment(ServerStatusMonitor.self) private var statusMonitor
+    @Environment(SettingsRouter.self) private var settingsRouter
+    @Environment(AuthStore.self) private var auth
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.windowActions) private var windowActions
     @Environment(\.openAppSettings) private var openAppSettings
     @Environment(\.scenePhase) private var scenePhase
@@ -55,7 +60,12 @@ struct ChatView: View {
         }
         .toolbar {
             ToolbarItem(placement: .principal) {
-                ModelPickerButton(session: session, server: selection.server, modelID: selection.modelID) {
+                ModelPickerButton(
+                    session: session,
+                    server: selection.server,
+                    modelID: selection.modelID,
+                    environment: forwardedEnvironment
+                ) {
                     isExplorerPresented = true
                 }
             }
@@ -118,6 +128,18 @@ struct ChatView: View {
 }
 
 extension ChatView {
+    private var forwardedEnvironment: ForwardedEnvironment {
+        ForwardedEnvironment(
+            modelContainer: modelContext.container,
+            modelCatalog: catalog,
+            pullManager: pullManager,
+            statusMonitor: statusMonitor,
+            settingsRouter: settingsRouter,
+            auth: auth,
+            openAppSettings: openAppSettings
+        )
+    }
+
     private func perform(_ action: CommandPaletteAction) {
         switch action {
         case .newChat: windowActions?.newChat()
@@ -187,7 +209,9 @@ struct MessageListView: View {
             .defaultScrollAnchor(.bottom)
             .scrollDismissesKeyboard(.interactively)
             .onScrollGeometryChange(for: Bool.self) { geometry in
-                geometry.contentOffset.y + geometry.containerSize.height >= geometry.contentSize.height - 60
+                // Generous threshold: the action bar and stats line appear after a reply finishes
+                // and shouldn't count as "scrolled away".
+                geometry.contentOffset.y + geometry.containerSize.height >= geometry.contentSize.height - 150
             } action: { _, isAtBottom in
                 pin.isAtBottom = isAtBottom
                 withAnimation(.snappy) { showsJumpButton = !isAtBottom }
@@ -212,6 +236,12 @@ struct MessageListView: View {
                     .help("Jump to latest")
                     .accessibilityLabel("Jump to latest message")
                     .transition(.scale(scale: 0.8).combined(with: .opacity))
+                }
+            }
+            .onChange(of: session.isStreaming) { _, isStreaming in
+                // Keep the finished reply's action bar in view.
+                if !isStreaming, pin.isAtBottom {
+                    withAnimation(.snappy) { proxy.scrollTo(Self.bottomID, anchor: .bottom) }
                 }
             }
             .onChange(of: session.sendCount) { _, _ in

@@ -6,6 +6,8 @@ struct ModelPickerButton: View {
     let session: ChatSession
     let server: ServerConfig?
     let modelID: String?
+    /// Re-applied to the popover, which may be hosted outside the window's view tree.
+    let environment: ForwardedEnvironment
     var onBrowse: () -> Void
     @State private var isPresented = false
 
@@ -50,6 +52,7 @@ struct ModelPickerButton: View {
                     }
                 }
             )
+            .forwardingEnvironment(environment)
             #if os(iOS)
             .presentationDetents([.medium, .large])
             .presentationCompactAdaptation(.sheet)

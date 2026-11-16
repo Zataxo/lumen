@@ -171,8 +171,8 @@ private struct AssistantMessageView: View {
                 Text(summary)
                     .font(.caption.monospacedDigit())
                     .foregroundStyle(.tertiary)
-                    .lineLimit(1)
-                    .truncationMode(.middle)
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
                     .help(details)
                     .accessibilityLabel(details.isEmpty ? summary : details.replacingOccurrences(of: "\n", with: ", "))
             }

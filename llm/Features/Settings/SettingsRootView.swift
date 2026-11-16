@@ -30,7 +30,7 @@ struct SettingsRootView: View {
             }
             Tab("Data", systemImage: "externaldrive") {
                 DataSettingsView()
-                    .frame(width: 600, height: 400)
+                    .frame(width: 600, height: 500)
             }
         }
         #else
@@ -56,6 +56,13 @@ struct SettingsRootView: View {
                     NavigationLink(value: SettingsPage.data) {
                         Label("Data", systemImage: "externaldrive")
                     }
+                } footer: {
+                    Text("Lumen \(AppInfo.versionLine)")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity)
+                        .padding(.top, Spacing.large)
+                        .textSelection(.enabled)
                 }
             }
             .navigationTitle("Settings")

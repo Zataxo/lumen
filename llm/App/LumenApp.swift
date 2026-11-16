@@ -8,7 +8,7 @@ struct LumenApp: App {
     @State private var settingsRouter = SettingsRouter()
     @State private var modelCatalog = ModelCatalog()
     @State private var pullManager = PullManager()
-    @State private var auth = AuthStore()
+    @State private var auth: AuthStore
 
     init() {
         do {
@@ -19,6 +19,9 @@ struct LumenApp: App {
         #if DEBUG
         DebugSeeder.seedIfRequested(into: modelContainer.mainContext)
         #endif
+        // Before AuthStore reads the remembered session from the Keychain.
+        FreshInstallGuard.run(container: modelContainer)
+        _auth = State(initialValue: AuthStore())
     }
 
     var body: some Scene {

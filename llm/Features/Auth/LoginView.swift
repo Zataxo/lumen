@@ -13,7 +13,7 @@ struct LoginView: View {
     @State private var failures = 0
     @State private var hasAppeared = false
     @FocusState private var focus: Field?
-
+ 
     private enum Field { case username, password }
 
     private var canSubmit: Bool {

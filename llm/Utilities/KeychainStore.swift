@@ -52,6 +52,18 @@ nonisolated enum KeychainStore {
         assert(status == errSecSuccess, "Keychain write failed: \(status)")
     }
 
+    /// Removes every server's secrets.
+    static func deleteAllSecrets() {
+        var query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: service,
+            kSecUseDataProtectionKeychain as String: true,
+        ]
+        SecItemDelete(query as CFDictionary)
+        query[kSecUseDataProtectionKeychain as String] = nil
+        SecItemDelete(query as CFDictionary)
+    }
+
     static func deleteSecrets(for serverID: UUID) {
         var query = baseQuery(account: serverID.uuidString)
         SecItemDelete(query as CFDictionary)
