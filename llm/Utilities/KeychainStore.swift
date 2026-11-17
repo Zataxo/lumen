@@ -26,7 +26,10 @@ nonisolated enum KeychainStore {
 
         var result: AnyObject?
         var status = SecItemCopyMatching(query as CFDictionary, &result)
-        if status == errSecMissingEntitlement {
+        // Builds without a keychain entitlement (ad-hoc signed Mac apps) save to the file-based
+        // keychain. Reading the data-protection keychain then reports "not found" rather than
+        // "missing entitlement", so look in the file-based keychain for either status.
+        if status == errSecMissingEntitlement || status == errSecItemNotFound {
             query[kSecUseDataProtectionKeychain as String] = nil
             status = SecItemCopyMatching(query as CFDictionary, &result)
         }

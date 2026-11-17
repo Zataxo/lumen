@@ -91,7 +91,24 @@ nonisolated final class OpenAICompatibleProvider: LLMProvider {
         let clock = ContinuousClock()
         let start = clock.now
         let models = try await listModels()
+        try await verifyKeyIfPossible()
         return HealthReport(latency: clock.now - start, modelCount: models.count, serverVersion: nil)
+    }
+
+    /// Some gateways (OpenRouter) list models without a key, so a successful model list doesn't
+    /// prove the key works. Where the gateway has a key-info endpoint, ask it; a 401/403 there
+    /// fails the test the same way a chat would.
+    private func verifyKeyIfPossible() async throws {
+        guard let host = connection.baseURL.host()?.lowercased(),
+              host == "openrouter.ai" || host.hasSuffix(".openrouter.ai")
+        else { return }
+        let request = try transport.makeRequest(path: apiPrefix + "/key")
+        do {
+            _ = try await transport.data(for: request)
+        } catch let error as ProviderError {
+            if case .unauthorized = error { throw error }
+            // Any other failure (endpoint moved, rate limit) shouldn't fail an otherwise good test.
+        }
     }
 
     func streamChat(_ request: ChatRequest) -> AsyncThrowingStream<ChatChunk, any Error> {

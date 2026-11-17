@@ -9,7 +9,8 @@ nonisolated enum ProviderError: Error, LocalizedError, Hashable, Sendable {
     case offline(isLocalHost: Bool)
     case insecureConnectionBlocked
     case tlsFailed
-    case unauthorized(status: Int)
+    /// `message` is the server's own reason, when it gave one (e.g. "No auth credentials found").
+    case unauthorized(status: Int, message: String? = nil)
     case notFound
     /// The server is reachable but doesn't have the requested model (Ollama and OpenAI-style 404s).
     case modelNotFound(String)
@@ -28,7 +29,7 @@ nonisolated enum ProviderError: Error, LocalizedError, Hashable, Sendable {
         case .offline(let isLocal): isLocal ? "Local network unavailable" : "You're offline"
         case .insecureConnectionBlocked: "Insecure connection blocked"
         case .tlsFailed: "Secure connection failed"
-        case .unauthorized(let status): status == 403 ? "403 Forbidden" : "401 Unauthorized"
+        case .unauthorized(let status, _): status == 403 ? "403 Forbidden" : "401 Unauthorized"
         case .notFound: "404 Not Found"
         case .modelNotFound: "Model not available"
         case .http(let status, _): "HTTP \(status)"
@@ -57,8 +58,10 @@ nonisolated enum ProviderError: Error, LocalizedError, Hashable, Sendable {
             "This server must be reached over https://."
         case .tlsFailed:
             "The server's certificate couldn't be verified. If it only speaks plain HTTP, use http://."
-        case .unauthorized:
-            "Check the API key, or the Authorization header if the server is behind a proxy."
+        case .unauthorized(_, let message):
+            [message.map { "The server said: \($0)." }, "Check the API key, or the Authorization header if the server is behind a proxy."]
+                .compactMap { $0 }
+                .joined(separator: " ")
         case .modelNotFound(let message):
             "\(message.prefix(1).uppercased() + message.dropFirst()). Choose another model from the picker, or install it on the server."
         case .notFound:
@@ -99,7 +102,7 @@ nonisolated enum ProviderError: Error, LocalizedError, Hashable, Sendable {
 
     static func fromHTTP(status: Int, body: Data) -> ProviderError {
         switch status {
-        case 401, 403: return .unauthorized(status: status)
+        case 401, 403: return .unauthorized(status: status, message: extractMessage(from: body))
         case 404:
             // Ollama: "model 'x' not found"; OpenAI-style: "The model `x` does not exist".
             if let message = extractMessage(from: body), message.localizedCaseInsensitiveContains("model") {

@@ -273,7 +273,7 @@ struct HTTPErrorMappingTests {
 
     @Test func plainNotFoundAndAuth() {
         #expect(ProviderError.fromHTTP(status: 404, body: Data("404 page not found".utf8)) == .notFound)
-        #expect(ProviderError.fromHTTP(status: 401, body: Data()) == .unauthorized(status: 401))
+        #expect(ProviderError.fromHTTP(status: 401, body: Data()) == .unauthorized(status: 401, message: nil))
         #expect(ProviderError.fromHTTP(status: 500, body: Data(#"{"error":"out of memory"}"#.utf8)) == .http(status: 500, message: "out of memory"))
     }
 }
