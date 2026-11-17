@@ -16,22 +16,22 @@
 			containerPortal = F5872A8D30A9EA7200BCBD06 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = F5872A9430A9EA7200BCBD06;
-			remoteInfo = llm.app;
+			remoteInfo = Lumen;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		F5872A9530A9EA7200BCBD06 /* llm.app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = llm.app.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F5872A9530A9EA7200BCBD06 /* Lumen.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lumen.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5872AB030A9EA7200BCBD06 /* LumenTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LumenTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		F5872ABB30A9EA7200BCBD06 /* Exceptions for "llm" folder in "llm.app" target */ = {
+		F5872ABB30A9EA7200BCBD06 /* Exceptions for "llm" folder in "Lumen" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Resources/Info.plist,
 			);
-			target = F5872A9430A9EA7200BCBD06 /* llm.app */;
+			target = F5872A9430A9EA7200BCBD06 /* Lumen */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -39,7 +39,7 @@
 		F5872A9730A9EA7200BCBD06 /* llm */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				F5872ABB30A9EA7200BCBD06 /* Exceptions for "llm" folder in "llm.app" target */,
+				F5872ABB30A9EA7200BCBD06 /* Exceptions for "llm" folder in "Lumen" target */,
 			);
 			path = llm;
 			sourceTree = "<group>";
@@ -82,7 +82,7 @@
 		F5872A9630A9EA7200BCBD06 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F5872A9530A9EA7200BCBD06 /* llm.app.app */,
+				F5872A9530A9EA7200BCBD06 /* Lumen.app */,
 				F5872AB030A9EA7200BCBD06 /* LumenTests.xctest */,
 			);
 			name = Products;
@@ -91,9 +91,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		F5872A9430A9EA7200BCBD06 /* llm.app */ = {
+		F5872A9430A9EA7200BCBD06 /* Lumen */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F5872AA030A9EA7200BCBD06 /* Build configuration list for PBXNativeTarget "llm.app" */;
+			buildConfigurationList = F5872AA030A9EA7200BCBD06 /* Build configuration list for PBXNativeTarget "Lumen" */;
 			buildPhases = (
 				F5872A9130A9EA7200BCBD06 /* Sources */,
 				F5872A9230A9EA7200BCBD06 /* Frameworks */,
@@ -106,12 +106,12 @@
 			fileSystemSynchronizedGroups = (
 				F5872A9730A9EA7200BCBD06 /* llm */,
 			);
-			name = llm.app;
+			name = Lumen;
 			packageProductDependencies = (
 				F5872AC030A9EA7200BCBD06 /* Markdown */,
 			);
-			productName = llm.app;
-			productReference = F5872A9530A9EA7200BCBD06 /* llm.app.app */;
+			productName = Lumen;
+			productReference = F5872A9530A9EA7200BCBD06 /* Lumen.app */;
 			productType = "com.apple.product-type.application";
 		};
 		F5872AB230A9EA7200BCBD06 /* LumenTests */ = {
@@ -173,7 +173,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F5872A9430A9EA7200BCBD06 /* llm.app */,
+				F5872A9430A9EA7200BCBD06 /* Lumen */,
 				F5872AB230A9EA7200BCBD06 /* LumenTests */,
 			);
 		};
@@ -216,7 +216,7 @@
 /* Begin PBXTargetDependency section */
 		F5872AB730A9EA7200BCBD06 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = F5872A9430A9EA7200BCBD06 /* llm.app */;
+			target = F5872A9430A9EA7200BCBD06 /* Lumen */;
 			targetProxy = F5872AB630A9EA7200BCBD06 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -345,7 +345,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 37TJBT8WLA;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -370,7 +370,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "zataxo.swift.llm-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -396,7 +396,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 37TJBT8WLA;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -421,7 +421,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "zataxo.swift.llm-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -461,7 +461,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/llm.app.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/llm.app";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Lumen.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Lumen";
 			};
 			name = Debug;
 		};
@@ -486,7 +486,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/llm.app.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/llm.app";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Lumen.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Lumen";
 			};
 			name = Release;
 		};
@@ -502,7 +502,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F5872AA030A9EA7200BCBD06 /* Build configuration list for PBXNativeTarget "llm.app" */ = {
+		F5872AA030A9EA7200BCBD06 /* Build configuration list for PBXNativeTarget "Lumen" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F5872AA130A9EA7200BCBD06 /* Debug */,

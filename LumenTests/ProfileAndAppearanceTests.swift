@@ -3,7 +3,7 @@ import Foundation
 import ImageIO
 import Testing
 import UniformTypeIdentifiers
-@testable import llm_app
+@testable import Lumen
 
 @Suite("System prompt")
 struct SystemPromptBuilderTests {

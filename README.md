@@ -55,7 +55,7 @@
 ## Getting started
 
 1. Open `llm.app.xcodeproj` in Xcode.
-2. Choose the **llm.app** scheme and an iPhone simulator, iPad, or **My Mac**, then press **⌘R**.
+2. Choose the **Lumen** scheme and an iPhone simulator, iPad, or **My Mac**, then press **⌘R**.
 3. Sign in with a demo account (below).
 4. Add your server in **Settings → Servers** (for example `http://192.168.1.50:11434`), tap **Test Connection**, then start chatting.
 
@@ -84,7 +84,7 @@ The IPA must be signed before it can be installed. Run either script with `--hel
 ## Tests
 
 ```bash
-xcodebuild test -project llm.app.xcodeproj -scheme llm.app -destination 'platform=macOS'
+xcodebuild test -project llm.app.xcodeproj -scheme Lumen -destination 'platform=macOS'
 ```
 
 ## Project layout

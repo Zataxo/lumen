@@ -37,7 +37,7 @@ struct ModelPickerButton: View {
         .buttonStyle(.plain)
         .help("Switch model or server")
         .accessibilityLabel("Model: \(modelID ?? "none"), server: \(server?.name ?? "none")")
-        .popover(isPresented: $isPresented, arrowEdge: .bottom) {
+        .popover(isPresented: $isPresented, arrowEdge: Self.arrowEdge) {
             ModelPickerView(
                 session: session,
                 initialServerID: server?.id,
@@ -53,11 +53,36 @@ struct ModelPickerButton: View {
                 }
             )
             .forwardingEnvironment(environment)
-            #if os(iOS)
-            .presentationDetents([.medium, .large])
-            .presentationCompactAdaptation(.sheet)
-            #endif
+            .modifier(ModelPickerPresentation())
         }
+    }
+}
+
+extension ModelPickerButton {
+    /// macOS names the anchor's edge; iOS names the popover's edge, so `.top` places it below.
+    #if os(macOS)
+    static let arrowEdge = Edge.bottom
+    #else
+    static let arrowEdge = Edge.top
+    #endif
+}
+
+/// iPad: always a compact popover under the title, even in a narrow window, where it would
+/// otherwise turn into a half-height sheet. iPhone: a sheet with a grabber.
+private struct ModelPickerPresentation: ViewModifier {
+    func body(content: Content) -> some View {
+        #if os(iOS)
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            content.presentationCompactAdaptation(.popover)
+        } else {
+            content
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+                .presentationCompactAdaptation(.sheet)
+        }
+        #else
+        content
+        #endif
     }
 }
 
@@ -115,37 +140,37 @@ struct ModelPickerView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            VStack(spacing: Spacing.small) {
-                if servers.count > 1 {
-                    Picker("Server", selection: $serverID) {
-                        ForEach(servers) { server in
-                            Text(server.name).tag(Optional(server.id))
+            if servers.count > 1 || showsSearch {
+                VStack(spacing: Spacing.small) {
+                    if servers.count > 1 {
+                        Picker("Server", selection: $serverID) {
+                            ForEach(servers) { server in
+                                Text(server.name).tag(Optional(server.id))
+                            }
                         }
+                        .pickerStyle(.segmented)
+                        .labelsHidden()
                     }
-                    .pickerStyle(.segmented)
-                    .labelsHidden()
+                    if showsSearch {
+                        searchField
+                    }
                 }
-                HStack(spacing: Spacing.small - 2) {
-                    Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
-                    TextField("Search models", text: $search)
-                        .textFieldStyle(.plain)
-                        .focused($searchFocused)
-                        .onSubmit { if let first = filteredModels.first { choose(first) } }
-                }
-                .padding(.horizontal, Spacing.small + 2)
-                .padding(.vertical, Spacing.small - 1)
-                .background(Color.primary.opacity(0.06), in: RoundedRectangle(cornerRadius: Radius.medium, style: .continuous))
+                .padding(Spacing.medium)
+                Divider()
             }
-            .padding(Spacing.medium)
 
-            Divider()
             content
+                #if os(macOS)
                 .frame(minHeight: 220)
+                #else
+                .frame(minHeight: isPad ? nil : 220)
+                .frame(height: isPad ? padListHeight : nil)
+                #endif
             Divider()
 
             HStack {
                 Button("Browse Models…", systemImage: "square.grid.2x2", action: onBrowse)
-                Spacer()
+                Spacer(minLength: Spacing.small)
                 Button("Manage Servers…") {
                     onDone()
                     openAppSettings()
@@ -153,17 +178,69 @@ struct ModelPickerView: View {
             }
             .buttonStyle(.borderless)
             .font(.callout)
+            .lineLimit(1)
             .padding(.horizontal, Spacing.medium)
             .padding(.vertical, Spacing.small + 2)
         }
         #if os(macOS)
         .frame(width: 360, height: 420)
+        #else
+        .frame(width: isPad ? 380 : nil)
         #endif
         .task(id: server?.id) {
             if let server { await catalog.load(server) }
         }
+        #if os(macOS)
+        // Type-to-filter and Return to pick. On iPad and iPhone this would pop up the
+        // on-screen keyboard over the list the moment the picker opens.
         .onAppear { searchFocused = true }
+        #endif
     }
+
+    private var searchField: some View {
+        HStack(spacing: Spacing.small - 2) {
+            Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
+            TextField("Search models", text: $search)
+                .textFieldStyle(.plain)
+                .focused($searchFocused)
+                .onSubmit { if let first = filteredModels.first { choose(first) } }
+        }
+        .padding(.horizontal, Spacing.small + 2)
+        .padding(.vertical, Spacing.small - 1)
+        .background(Color.primary.opacity(0.06), in: RoundedRectangle(cornerRadius: Radius.medium, style: .continuous))
+    }
+
+    /// Mac keeps the search field for typing to filter; on touch screens a short list doesn't need it.
+    private var showsSearch: Bool {
+        #if os(macOS)
+        true
+        #else
+        guard let server else { return false }
+        return catalog.models(for: server.id).count > 6 || !search.isEmpty
+        #endif
+    }
+
+    #if os(iOS)
+    private var isPad: Bool { UIDevice.current.userInterfaceIdiom == .pad }
+
+    /// iPad popovers size to their content, and a List has no natural height, so estimate one
+    /// that fits the rows without leaving a large empty gap.
+    private var padListHeight: CGFloat {
+        guard let server else { return 200 }
+        switch catalog.state(for: server.id) {
+        case .loaded:
+            let rows = filteredModels.reduce(CGFloat(0)) { total, model in
+                let hasDetails = model.parameterSize != nil || model.quantization != nil
+                return total + (hasDetails ? 71 : 50)
+            }
+            return min(max(rows, 140), 420)
+        case .failed:
+            return 240
+        case .idle, .loading:
+            return 5 * 71
+        }
+    }
+    #endif
 
     private var filteredModels: [ModelInfo] {
         guard let server else { return [] }

@@ -17,6 +17,12 @@ struct ComposerView: View {
     @State private var isFileImporterPresented = false
     @State private var photoItems: [PhotosPickerItem] = []
 
+    /// One size for both round buttons and a single line of text, so the +, the text and the
+    /// send button share a center line, and the bar is a pill with even insets all round.
+    private static let controlSize: CGFloat = 36
+    private static let barInset: CGFloat = 6
+    private static let barRadius = (controlSize + 2 * barInset) / 2
+
     private var canSubmit: Bool {
         session.canSendDraft && canSend && !session.isPreparingImages
     }
@@ -24,15 +30,15 @@ struct ComposerView: View {
     var body: some View {
         VStack(spacing: Spacing.small) {
             if let notice = session.notice {
-                Label(notice.hint ?? notice.title, systemImage: "info.circle")
+                Label(Self.text(for: notice), systemImage: "info.circle")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .transition(.opacity)
             }
             VStack(alignment: .leading, spacing: Spacing.xSmall) {
                 if !session.pendingImages.isEmpty || session.isPreparingImages {
+                    // Lines up with the + button's left edge.
                     PendingImagesTray(session: session)
-                        .padding(.leading, Spacing.xSmall)
                 }
                 HStack(alignment: .bottom, spacing: Spacing.small) {
                     attachMenu
@@ -40,7 +46,10 @@ struct ComposerView: View {
                         .textFieldStyle(.plain)
                         .lineLimit(1...8)
                         .focused($isFocused)
-                        .padding(.vertical, 9)
+                        .padding(.vertical, 7)
+                        // A single line centers on the buttons; longer drafts grow upward
+                        // while the buttons stay beside the last line.
+                        .frame(minHeight: Self.controlSize)
                         #if os(macOS)
                         .onSubmit(send)
                         .onPasteCommand(of: [.image, .png, .jpeg, .tiff, .fileURL]) { _ in pasteImages() }
@@ -48,12 +57,10 @@ struct ComposerView: View {
                     actionButton
                 }
             }
-            .padding(.leading, Spacing.xSmall + 2)
-            .padding(.trailing, Spacing.small - 2)
-            .padding(.vertical, Spacing.xSmall + 1)
-            .glassSurface(in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+            .padding(Self.barInset)
+            .glassSurface(in: RoundedRectangle(cornerRadius: Self.barRadius, style: .continuous))
             .overlay {
-                RoundedRectangle(cornerRadius: 22, style: .continuous)
+                RoundedRectangle(cornerRadius: Self.barRadius, style: .continuous)
                     .strokeBorder(.primary.opacity(isFocused ? 0.14 : 0.08), lineWidth: 1)
             }
         }
@@ -98,34 +105,61 @@ struct ComposerView: View {
 
     // MARK: Attach
 
+    @ViewBuilder
     private var attachMenu: some View {
-        Menu {
-            Button("Photo Library", systemImage: "photo.on.rectangle") { isPhotoPickerPresented = true }
-            Button("Choose File…", systemImage: "folder") { isFileImporterPresented = true }
-            Button("Paste Image", systemImage: "doc.on.clipboard") { pasteImages() }
-                .disabled(!ImageIntake.pasteboardHasImage)
-        } label: {
-            Image(systemName: "plus")
-                .font(.system(size: 16, weight: .semibold))
-                .frame(width: 32, height: 32)
-                .background(Color.primary.opacity(0.06), in: Circle())
-                .foregroundStyle(supportsVision == false ? Color.secondary.opacity(0.5) : Color.secondary)
-                .contentShape(Circle())
+        if supportsVision == false {
+            // Not `.disabled`: on iPad and iPhone there's no hover tooltip, so a dead button
+            // gives no clue. Tapping explains why instead.
+            Button(action: explainNoVision) { attachLabel }
+                .buttonStyle(.plain)
+                .help(noVisionMessage)
+                .accessibilityLabel("Attach images")
+                .accessibilityHint(noVisionMessage)
+        } else {
+            Menu {
+                Button("Photo Library", systemImage: "photo.on.rectangle") { isPhotoPickerPresented = true }
+                Button("Choose File…", systemImage: "folder") { isFileImporterPresented = true }
+                Button("Paste Image", systemImage: "doc.on.clipboard") { pasteImages() }
+                    .disabled(!ImageIntake.pasteboardHasImage)
+            } label: {
+                attachLabel
+            }
+            .menuStyle(.button)
+            .buttonStyle(.plain)
+            .menuIndicator(.hidden)
+            .fixedSize()
+            .disabled(session.pendingImages.count >= PendingImage.maxCount)
+            .help("Attach images")
+            .accessibilityLabel("Attach images")
         }
-        .menuStyle(.button)
-        .buttonStyle(.plain)
-        .menuIndicator(.hidden)
-        .fixedSize()
-        .disabled(supportsVision == false || session.pendingImages.count >= PendingImage.maxCount)
-        .help(supportsVision == false
-              ? "\(modelName ?? "This model") can't read images — choose a vision model to attach photos."
-              : "Attach images")
-        .accessibilityLabel("Attach images")
+    }
+
+    private var attachLabel: some View {
+        Image(systemName: "plus")
+            .font(.system(size: 16, weight: .semibold))
+            .frame(width: Self.controlSize, height: Self.controlSize)
+            .background(Color.primary.opacity(0.07), in: Circle())
+            .foregroundStyle(supportsVision == false ? Color.secondary.opacity(0.5) : Color.secondary)
+            .contentShape(Circle())
+    }
+
+    private var noVisionMessage: String {
+        "\(modelName ?? "This model") can't read images. To attach photos, switch to a model with Vision, such as gemma3, llava or qwen2.5vl."
+    }
+
+    private func explainNoVision() {
+        session.notice = .other(noVisionMessage)
+    }
+
+    /// Plain notices (`.other`) carry their own text; errors show their hint or title.
+    static func text(for notice: ProviderError) -> String {
+        if case .other(let message) = notice { return message }
+        return notice.hint ?? notice.title
     }
 
     private func pasteImages() {
         guard supportsVision != false else {
-            session.notice = .other("\(modelName ?? "This model") can't read images. Choose a model with Vision.")
+            explainNoVision()
             return
         }
         let datas = ImageIntake.pasteboardImages()
@@ -144,7 +178,7 @@ struct ComposerView: View {
             Button(action: session.stop) {
                 Image(systemName: "stop.fill")
                     .font(.system(size: 13, weight: .bold))
-                    .frame(width: 32, height: 32)
+                    .frame(width: Self.controlSize, height: Self.controlSize)
                     // Explicit colors: `.primary` picks up the glass's vibrancy and washes out.
                     .background(accent, in: Circle())
                     .foregroundStyle(Color.white)
@@ -157,8 +191,8 @@ struct ComposerView: View {
             Button(action: send) {
                 Image(systemName: "arrow.up")
                     .font(.system(size: 15, weight: .bold))
-                    .frame(width: 32, height: 32)
-                    .background(canSubmit ? accent : Color.primary.opacity(0.08), in: Circle())
+                    .frame(width: Self.controlSize, height: Self.controlSize)
+                    .background(canSubmit ? accent : Color.primary.opacity(0.07), in: Circle())
                     .foregroundStyle(canSubmit ? Color.white : Color.secondary)
             }
             .buttonStyle(.plain)

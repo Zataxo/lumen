@@ -1,7 +1,7 @@
 import Foundation
 import Synchronization
 import Testing
-@testable import llm_app
+@testable import Lumen
 
 /// In-memory stand-in for the Keychain session.
 final class MemorySessionStorage: SessionStorage, @unchecked Sendable {

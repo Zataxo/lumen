@@ -1,6 +1,6 @@
 import Foundation
 import Testing
-@testable import llm_app
+@testable import Lumen
 
 /// OpenRouter lists models without a key, so Test Connection must check the key separately.
 struct OpenRouterAuthTests {

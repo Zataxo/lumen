@@ -1,6 +1,6 @@
 import Foundation
 import Testing
-@testable import llm_app
+@testable import Lumen
 
 /// Splits `text` into chunks at the given byte offsets, simulating arbitrary network packets.
 private func chunks(_ text: String, splitAt offsets: [Int]) -> [[UInt8]] {

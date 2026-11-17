@@ -1,6 +1,6 @@
 import Foundation
 import Testing
-@testable import llm_app
+@testable import Lumen
 
 @Suite("Chat export")
 struct ChatExporterTests {

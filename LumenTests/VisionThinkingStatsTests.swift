@@ -3,7 +3,7 @@ import Foundation
 import ImageIO
 import Testing
 import UniformTypeIdentifiers
-@testable import llm_app
+@testable import Lumen
 
 private func testPNG(width: Int, height: Int) -> Data {
     let context = CGContext(

@@ -17,7 +17,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 PROJECT="$PROJECT_DIR/llm.app.xcodeproj"
-SCHEME="llm.app"
+SCHEME="Lumen"
 APP_NAME="Lumen"
 
 CONFIGURATION="Release"
@@ -66,8 +66,8 @@ if ! xcodebuild \
   exit 1
 fi
 
-APP_PATH="$(find "$DERIVED_DATA/Build/Products/$CONFIGURATION-iphoneos" -maxdepth 1 -name "*.app" -type d | head -1)"
-if [[ -z "$APP_PATH" ]]; then
+APP_PATH="$DERIVED_DATA/Build/Products/$CONFIGURATION-iphoneos/$SCHEME.app"
+if [[ ! -d "$APP_PATH" ]]; then
   echo "✗ Built .app not found in $DERIVED_DATA/Build/Products/$CONFIGURATION-iphoneos" >&2
   exit 1
 fi

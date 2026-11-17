@@ -1,7 +1,7 @@
 import Foundation
 import Synchronization
 import Testing
-@testable import llm_app
+@testable import Lumen
 
 // MARK: Stub networking
 

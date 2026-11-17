@@ -21,7 +21,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 PROJECT="$PROJECT_DIR/llm.app.xcodeproj"
-SCHEME="llm.app"
+SCHEME="Lumen"
 APP_NAME="Lumen"
 
 CONFIGURATION="Release"
@@ -77,8 +77,8 @@ if ! xcodebuild \
   exit 1
 fi
 
-BUILT_APP="$(find "$DERIVED_DATA/Build/Products/$CONFIGURATION" -maxdepth 1 -name "*.app" -type d | head -1)"
-[[ -n "$BUILT_APP" ]] || { echo "✗ Built .app not found" >&2; exit 1; }
+BUILT_APP="$DERIVED_DATA/Build/Products/$CONFIGURATION/$SCHEME.app"
+[[ -d "$BUILT_APP" ]] || { echo "✗ Built app not found at $BUILT_APP" >&2; exit 1; }
 
 INFO_PLIST="$BUILT_APP/Contents/Info.plist"
 VERSION="$(/usr/libexec/PlistBuddy -c 'Print CFBundleShortVersionString' "$INFO_PLIST" 2>/dev/null || echo 1.0)"

@@ -1,7 +1,7 @@
 import Foundation
 import SwiftData
 import Testing
-@testable import llm_app
+@testable import Lumen
 
 @Suite("Command palette matching")
 struct CommandPaletteMatcherTests {

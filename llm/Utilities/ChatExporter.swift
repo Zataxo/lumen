@@ -87,7 +87,7 @@ extension ExportedChat {
     /// Snapshot a SwiftData chat with its messages in order.
     init(chat: Chat, context: ModelContext) {
         let chatID = chat.id
-        let descriptor = FetchDescriptor<llm_app.Message>(
+        let descriptor = FetchDescriptor<Lumen.Message>(
             predicate: #Predicate { $0.chatID == chatID },
             sortBy: [SortDescriptor(\.position)]
         )
